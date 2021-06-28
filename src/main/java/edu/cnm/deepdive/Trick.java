@@ -16,9 +16,11 @@ public class Trick {
     List<Card> redPile = new ArrayList<>();
     List<Card> blackPile = new ArrayList<>();
     sortCards(deck, redPile, blackPile);
-    //TODO Swap a random number of cards between the 2 piles
-    //TODO sort the piles.
-    //TODO Count and print the pile contents
+    swapCards(redPile, blackPile, rng);
+    Collections.sort(redPile);
+    Collections.sort(blackPile);
+    printContents(redPile,Color.RED);
+    printContents(blackPile,Color.BLACK);
   }
 
   private static List<Card> getDeck(Random rng) {
@@ -32,17 +34,37 @@ public class Trick {
 
     return deck;
   }
-  private static void sortCards(List<Card>deck, List<Card> redPile, List<Card> blackPile){
-    for (Iterator<Card> iter = deck.iterator(); iter.hasNext();) {
+
+  private static void sortCards(List<Card> deck, List<Card> redPile, List<Card> blackPile) {
+    for (Iterator<Card> iter = deck.iterator(); iter.hasNext(); ) {
       Card selector = iter.next();
       Card card = iter.next();
-      if (selector.getSuit().getColor() == Color.RED ){
+      if (selector.getSuit().getColor() == Color.RED) {
         redPile.add(card);
-      }else {
+      } else {
         blackPile.add(card);
 
       }
     }
+  }
+
+  private static void swapCards(List<Card> redPile, List<Card> blackPile, Random rng) {
+    int numToSwap = rng.nextInt(Math.min(redPile.size(), blackPile.size()) + 1);
+    // Could use Collections.shuffle(redPile, rng) and Collections.shuffle(blackPile, rng).
+    for (int i = 0; i < numToSwap; i++) {
+      blackPile.add(redPile.remove(0));
+      redPile.add(blackPile.remove(0));
+    }
+  }
+
+  private static void printContents(List<Card> pile, Color color) {
+    int colorCount = 0;
+    for (Card card : pile) {
+      if (card.getSuit().getColor() == color) {
+        colorCount++;
+      }
+    }
+    System.out.printf("%1$s pile contains %2$d %1$s cards : %3$s%n", color, colorCount, pile);
   }
 
 }
